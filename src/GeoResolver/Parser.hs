@@ -1,6 +1,14 @@
 {-# LANGUAGE DeriveGeneric, OverloadedStrings #-}
+{-|
+Module      : GeoResolver.Parser
+Description : Parsing helper definitions for Googles geocoding API
+Copyright   : (c) 2015, Markenwerk, Jan Greve
+License     : MIT
+Maintainer  : jg@markenwerk.net
+-}
 module GeoResolver.Parser (
     -- * Data type definition for parsed types
+    Status,
     GoogleAnswer(..),
     GoogleResult(..),
     Component(..),
@@ -22,7 +30,8 @@ import Data.Maybe (fromMaybe)
 import Control.Arrow
 import qualified Data.ByteString.Lazy.Char8 as LBS
 
--- | Represents the status of the operation returned by google. Constructors represent possible 'String' values.
+-- | Represents the status of the operation returned by google. Constructors represent possible 'String' values
+-- according to googles documentation.
 data Status = OK | ZERO_RESULTS | OVER_QUERY_LIMIT | REQUEST_DENIED | INVALID_REQUEST | UNKNOWN_ERROR
     deriving (Generic, Show)
 instance FromJSON Status
