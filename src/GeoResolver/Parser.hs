@@ -1,5 +1,5 @@
 {-# LANGUAGE DeriveGeneric, OverloadedStrings #-}
-module Internal.Parser (
+module GeoResolver.Parser (
     -- * Data type definition for parsed types
     GoogleAnswer,
     GoogleResult,

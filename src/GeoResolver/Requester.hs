@@ -1,4 +1,4 @@
-module Internal.Requester (requestLookup,
+module GeoResolver.Requester (requestLookup,
     requestReverseLookup,
     uriFromQueryPairs,
     requestRaw

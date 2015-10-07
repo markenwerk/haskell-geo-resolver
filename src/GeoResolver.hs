@@ -5,8 +5,8 @@ module GeoResolver
       geoDecodeLanguage,
       geoRaw
     ) where
-import Internal.Requester
-import Internal.Parser
+import GeoResolver.Requester
+import GeoResolver.Parser
 import Control.Monad
 
 geoEncode :: String -> IO (Either String (Double, Double))
