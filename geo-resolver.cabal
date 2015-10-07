@@ -1,4 +1,4 @@
-name:                GeoResolver
+name:                geo-resolver
 version:             0.1.0.0
 synopsis:            Performs geo location lookups and parses the results 
 description:         Please see README.md
