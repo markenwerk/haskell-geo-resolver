@@ -1,6 +1,5 @@
 flags: {}
 packages:
 - '.'
-extra-deps:
-- uri-0.1.6.3
+extra-deps: []
 resolver: lts-3.4

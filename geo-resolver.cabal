@@ -18,7 +18,6 @@ library
   exposed-modules:     GeoResolver, GeoResolver.Parser, GeoResolver.Requester
   build-depends:       base >= 4.7 && < 5,
                        aeson >= 0.8.0.2 && < 1,
-                       uri >= 0.1.6.3 && < 0.2,
                        http-conduit >= 2.1.8 && < 2.2,
                        bytestring,
                        unordered-containers,
