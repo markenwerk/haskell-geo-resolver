@@ -22,7 +22,9 @@ library
                        http-conduit >= 2.1.8 && < 2.2,
                        bytestring,
                        unordered-containers,
-                       text
+                       text,
+                       http-types,
+                       blaze-builder
   default-language:    Haskell2010
 
 test-suite GeoResolver-test

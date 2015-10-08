@@ -1,14 +1,14 @@
 {-# LANGUAGE DeriveGeneric, OverloadedStrings #-}
 {-|
 Module      : GeoResolver.Parser
-Description : Parsing helper definitions for Googles geocoding API
+Description : Parsing helper definitions for Googles geocoding API.
 Copyright   : (c) 2015, Markenwerk, Jan Greve
 License     : MIT
 Maintainer  : jg@markenwerk.net
 -}
 module GeoResolver.Parser (
     -- * Data type definition for parsed types
-    Status,
+    Status(..),
     GoogleAnswer(..),
     GoogleResult(..),
     Component(..),
@@ -122,18 +122,30 @@ data Geometry = Geometry {
     --
     -- * @APPROXIMATE@ indicates that the returned result is approximate.
     locationType :: Text,
-    -- | contains the recommended viewport for displaying the returned result, 
-    -- specified as two latitude,longitude values defining the southwest 
-    -- and northeast corner of the viewport bounding box. Generally the viewport
+    -- | contains the recommended viewport for displaying the returned result. 
+    -- Generally the viewport
     -- is used to frame a result when displaying it to a user.
-    viewport :: HashMap Text Location
+    viewport :: GoogleBoundingBox,
+    -- | If viewport is not applicable, bounds contain a more sensible bounding box.
+    bounds :: Maybe GoogleBoundingBox
     } deriving (Generic, Show)
 instance FromJSON Geometry where
     parseJSON (Object v) = Geometry <$>
                            v .: "location" <*>
                            v .: "location_type" <*>
-                           v .: "viewport"
+                           v .: "viewport" <*>
+                           v .: "bounds"
     parseJSON _          = mempty
+
+-- | A Bounding box for a location.
+data GoogleBoundingBox = GoogleBoundingBox {
+    -- | The north east location of the bounding box
+    northeast :: Location,
+    -- | The south west location of the bounding box
+    southwest :: Location
+} deriving (Show, Generic)
+instance FromJSON GoogleBoundingBox
+
 
 -- | Abstraction of a geo location 
 data Location = Location {
