@@ -17,6 +17,7 @@ import Network.HTTP.Types
 import Network.HTTP.Conduit
 import Blaze.ByteString.Builder
 import qualified Data.ByteString.Lazy as LBS
+import qualified Data.ByteString.Lazy.Char8 as LBSC
 import Data.Text (Text, append, pack)
 
 baseURL :: Builder
@@ -30,22 +31,23 @@ uriFromQueryPairs ps = toLazyByteString $ baseURL `mappend` query
 -- invocation from the input. Sends a request and
 -- returns the Lazy ByteString from IO.
 requestRaw :: [(Text, Text)] -> IO LBS.ByteString
-requestRaw = simpleHttp . show . uriFromQueryPairs
+requestRaw = simpleHttp . LBSC.unpack . uriFromQueryPairs
 
-uriFromAddress :: Text -> LBS.ByteString
-uriFromAddress x = uriFromQueryPairs [("address",x)]
+uriFromAddress :: Maybe Text -> Text -> LBS.ByteString
+uriFromAddress Nothing x = uriFromQueryPairs [("address",x)]
+uriFromAddress (Just k) x = uriFromQueryPairs [("address",x), ("key", k)]
 
-uriFromLocation :: (Double, Double) -> LBS.ByteString
-uriFromLocation (lat, lng) = uriFromQueryPairs [("latlng", pack (show lat) `append` (pack $ ',':show lng))]
+
+uriFromLocation :: Maybe Text -> (Double, Double) -> LBS.ByteString
+uriFromLocation Nothing (lat, lng) = uriFromQueryPairs [("latlng", pack (show lat) `append` (pack $ ',':show lng))]
+uriFromLocation (Just k) (lat, lng) = uriFromQueryPairs [("latlng", pack (show lat) `append` (pack $ ',':show lng)), ("key", k)]
 
 -- | Convenience function to request a given address.
-requestEncode :: Text -> IO LBS.ByteString
-requestEncode = simpleHttp . show . uriFromAddress 
+requestEncode :: Maybe Text -> Text -> IO LBS.ByteString
+requestEncode mk = simpleHttp . LBSC.unpack . (uriFromAddress mk) 
 
 -- | Convenience function to request a given location.
-requestDecode :: (Double, Double) -> IO LBS.ByteString
-requestDecode = simpleHttp . show . uriFromLocation
-
-
+requestDecode :: Maybe Text  -> (Double, Double) -> IO LBS.ByteString
+requestDecode mk = simpleHttp . LBSC.unpack . (uriFromLocation mk)
 
 

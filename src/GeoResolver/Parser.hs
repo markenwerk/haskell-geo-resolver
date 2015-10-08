@@ -16,7 +16,7 @@ module GeoResolver.Parser (
     Location(..),
     -- * parsing
     parseAnswer,
-    -- * conveniance functions
+    -- * convenience functions
     getLocation,
     getAddress,
     getProperty
@@ -134,7 +134,7 @@ instance FromJSON Geometry where
                            v .: "location" <*>
                            v .: "location_type" <*>
                            v .: "viewport" <*>
-                           v .: "bounds"
+                           v .:? "bounds"
     parseJSON _          = mempty
 
 -- | A Bounding box for a location.
@@ -150,18 +150,22 @@ instance FromJSON GoogleBoundingBox
 -- | Abstraction of a geo location 
 data Location = Location {
     -- | Latitude of the location
-    lat :: Double,
+    latitude :: Double,
     -- | Longitude of the location
-    lng :: Double
+    longitude :: Double
     } deriving (Generic, Show)
-instance FromJSON Location
+instance FromJSON Location where
+    parseJSON (Object o) = Location <$>
+        o .: "lat" <*>
+        o .: "lng"
+    parseJSON _ = mempty
 
 -- | Takes a 'GoogleAnswer' and applies the function to the first 'GoogleResult'.
 -- Returns a 'Left' with an error description if anything unexpected happens.
 --
 -- For example, 'getLocation' uses this with 
 -- @
---  ((lat &&& lng) . location . geometry)
+--  ((latitude &&& longitude) . location . geometry)
 -- @
 getProperty :: GoogleAnswer -- ^ The answer to process.
     -> (GoogleResult -> a) -- ^ The function to be applied to the first (if any) result.
@@ -174,7 +178,7 @@ getProperty a f = case status a of
 
 -- | Gets the location from a 'GoogleAnswer', or returns an error.
 getLocation :: GoogleAnswer -> Either String (Double, Double)
-getLocation a = a `getProperty` ((lat &&& lng) . location . geometry)
+getLocation a = a `getProperty` ((latitude &&& longitude) . location . geometry)
 
 -- | Gets the formatted address from a GoogleAnswer (or an error)
 getAddress :: GoogleAnswer -> Either String String
