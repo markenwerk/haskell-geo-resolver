@@ -1,4 +1,4 @@
-{-# LANGUAGE DeriveGeneric, OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings, DeriveGeneric #-}
 {-|
 Module      : GeoResolver.Parser
 Description : Parsing helper definitions for Googles geocoding API.
@@ -38,10 +38,11 @@ import qualified Data.ByteString.Lazy.Char8 as LBS
 class GoogleArgumentListShow a where
   argListShow :: a -> String
 
+
 -- | Represents the status of the operation returned by google. Constructors represent possible 'String' values
 -- according to googles documentation.
 data Status = OK | ZERO_RESULTS | OVER_QUERY_LIMIT | REQUEST_DENIED | INVALID_REQUEST | UNKNOWN_ERROR
-    deriving (Generic, Show)
+    deriving (Eq, Show, Generic)
 instance FromJSON Status
 
 -- | Represents the answer google returned.
@@ -52,13 +53,17 @@ data GoogleAnswer r = GoogleAnswer {
     errorMessage :: Maybe String,
     -- | Optional list of actual 'GoogleResult' values. 
     results :: Maybe [r]
-    } deriving (Generic, Show)
+    } deriving (Show, Eq)
 instance (FromJSON a) => FromJSON (GoogleAnswer a) where
     parseJSON (Object v) = GoogleAnswer <$>
                            v .: "status" <*>
                            v .:? "error_message" <*>
                            v .:? "results"
     parseJSON _          = mempty
+
+instance Functor GoogleAnswer where
+    fmap f (GoogleAnswer s e Nothing) = (GoogleAnswer s e Nothing)
+    fmap f (GoogleAnswer s e (Just xs)) = (GoogleAnswer s e (Just $ fmap f xs))
 
 instance Foldable GoogleAnswer where
     foldMap _ (GoogleAnswer _ _ Nothing) = mempty
@@ -85,7 +90,7 @@ data GoogleResult = GoogleResult {
     types :: [String],
     -- | If present, hinting that this result only partially matches the requested entity.
     partialMatch :: Maybe Bool
-    } deriving (Generic, Show)
+    } deriving (Show, Generic)
 instance FromJSON GoogleResult where
     parseJSON (Object v) = GoogleResult <$>
                            v .: "address_components" <*>
@@ -104,7 +109,7 @@ data Component = Component {
     shortName :: String,
     -- | indicating the type of the address component.
     cTypes :: [String]
-    } deriving (Generic, Show)
+    } deriving (Show, Eq)
 instance FromJSON Component where
     parseJSON (Object v) = Component <$>
                            v .: "long_name" <*>
@@ -141,7 +146,7 @@ data Geometry = Geometry {
     viewport :: GoogleBoundingBox,
     -- | If viewport is not applicable, bounds contain a more sensible bounding box.
     bounds :: Maybe GoogleBoundingBox
-    } deriving (Generic, Show)
+    } deriving (Show, Eq)
 instance FromJSON Geometry where
     parseJSON (Object v) = Geometry <$>
                            v .: "location" <*>
@@ -156,7 +161,7 @@ data GoogleBoundingBox = GoogleBoundingBox {
     northeast :: Location,
     -- | The south west location of the bounding box
     southwest :: Location
-} deriving (Show, Generic)
+} deriving (Show, Eq, Generic)
 instance FromJSON GoogleBoundingBox
 instance GoogleArgumentListShow GoogleBoundingBox where
     argListShow (GoogleBoundingBox ne sw) = argListShow ne ++ '|' : argListShow sw
@@ -168,7 +173,7 @@ data Location = Location {
     latitude :: Double,
     -- | Longitude of the location
     longitude :: Double
-    } deriving (Generic, Show)
+    } deriving (Show, Eq)
 instance GoogleArgumentListShow Location where
     argListShow (Location lat long) = show lat ++ ',': show long
 

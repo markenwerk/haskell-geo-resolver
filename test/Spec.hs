@@ -6,11 +6,15 @@ import Test.HUnit.Base
 import Test.Framework.Providers.HUnit
 import qualified Data.ByteString.Lazy.Char8 as LBS
 import Data.ByteString.Base64.Lazy (decodeLenient)
+import Test.Framework.Providers.QuickCheck2
+
 main :: IO ()
 main = defaultMain tests
 
 
-tests = [testGroup "Resolving (Encode)" 
+tests = [
+
+        testGroup "Resolving (Encode)" 
             [testCase "Resolving Home" testResolvingHere,
             testCase "Resolving Empty String" testResolvNowhere],
         testGroup "Reverse resolving (Decoding)"
@@ -34,7 +38,6 @@ tests = [testGroup "Resolving (Encode)"
 
 
     ]
-
 
 testInvalid = True @=? parserResult `hasLeft` (const True)
     where parserResult = parseAnswer (LBS.pack "[}")

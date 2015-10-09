@@ -58,19 +58,19 @@ instance GoogleArgumentList GoogleRequest where
   argShow (EncodingRequest (Left addr) b l r k) = map (second fromJust) $ filter (isJust . snd) $
     zip
       ["address", "bounds", "language", "region", "key"]
-      [Just . pack $ addr, fmap (pack . argListShow) b, fmap pack l, fmap pack r, fmap pack k]
+      (fmap (fmap pack) [Just addr, fmap argListShow b, l, r, k])
   argShow (EncodingRequest (Right c) b l r k) = map (second fromJust) $ filter (isJust . snd) $
     zip
       ["components", "bounds", "language", "region", "key"]
-      [Just . pack . argListShow $ c, fmap (pack . argListShow) b, fmap pack l, fmap pack r, fmap pack k]
+      (fmap (fmap pack) [Just (argListShow c), fmap argListShow b, l, r, k])
   argShow (DecodingRequest (Left loc) k l rt lt) = map (second fromJust) $ filter (isJust . snd) $
     zip
       ["latlng", "key", "language", "result_type", "location_type"]
-      [Just . pack . argListShow $ loc, fmap pack k, fmap pack l, fmap (pack . argListShow) rt, fmap (pack . argListShow) lt]
+      (fmap (fmap pack) [Just (argListShow loc), k, l, fmap argListShow rt, fmap argListShow lt])
   argShow (DecodingRequest (Right pid) k l rt lt) = map (second fromJust) $ filter (isJust . snd) $
     zip
       ["place_id", "key", "language", "result_type", "location_type"]
-      [Just . pack $ pid, fmap pack k, fmap pack l, fmap (pack . argListShow) rt, fmap (pack . argListShow) lt]
+      (fmap (fmap pack) [Just pid, k, l, fmap argListShow rt, fmap argListShow lt])
 
 class GoogleArgumentList a where
   argShow :: a -> [(Text, Text)]
