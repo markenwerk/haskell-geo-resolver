@@ -8,11 +8,11 @@ Maintainer  : jg@markenwerk.net
 -}
 module GeoResolver.Requester (
     -- * Data Types
-    GoogleAPIRequest(..),
+    GoogleRequest(..),
     GoogleComponents(..),
     GoogleLocationTypes(..),
     GoogleResultTypes(..),
-    -- * Request methodsv
+    -- * Request methods
     requestEncode,
     requestDecode,
     requestRaw,
@@ -35,11 +35,12 @@ import Data.String (IsString(..))
 --
 -- For convenience, the 'IsString' instance generates a encoding request and assumes the String
 -- is the address.
-data GoogleAPIRequest = 
+data GoogleRequest = 
   EncodingRequest {
     encodeParameter :: Either String GoogleComponents,
     encodeBounds :: Maybe GoogleBoundingBox,
     encodeLanguage :: Maybe String,
+    encodeRegion :: Maybe String,
     encodeKey :: Maybe String
   }
   | DecodingRequest {
@@ -50,18 +51,18 @@ data GoogleAPIRequest =
     decodeLocationType :: Maybe GoogleLocationTypes
 }
 
-instance IsString GoogleAPIRequest where
-  fromString s = EncodingRequest (Left s) Nothing Nothing Nothing
+instance IsString GoogleRequest where
+  fromString s = EncodingRequest (Left s) Nothing Nothing Nothing Nothing
 
-instance GoogleArgumentList GoogleAPIRequest where
-  argShow (EncodingRequest (Left addr) b l k) = map (second fromJust) $ filter (isJust . snd) $
+instance GoogleArgumentList GoogleRequest where
+  argShow (EncodingRequest (Left addr) b l r k) = map (second fromJust) $ filter (isJust . snd) $
     zip
-      ["address", "bounds", "language", "key"]
-      [Just . pack $ addr, fmap (pack . argListShow) b, fmap pack l, fmap pack k]
-  argShow (EncodingRequest (Right c) b l k) = map (second fromJust) $ filter (isJust . snd) $
+      ["address", "bounds", "language", "region", "key"]
+      [Just . pack $ addr, fmap (pack . argListShow) b, fmap pack l, fmap pack r, fmap pack k]
+  argShow (EncodingRequest (Right c) b l r k) = map (second fromJust) $ filter (isJust . snd) $
     zip
-      ["components", "bounds", "language", "key"]
-      [Just . pack . argListShow $ c, fmap (pack . argListShow) b, fmap pack l, fmap pack k]
+      ["components", "bounds", "language", "region", "key"]
+      [Just . pack . argListShow $ c, fmap (pack . argListShow) b, fmap pack l, fmap pack r, fmap pack k]
   argShow (DecodingRequest (Left loc) k l rt lt) = map (second fromJust) $ filter (isJust . snd) $
     zip
       ["latlng", "key", "language", "result_type", "location_type"]
@@ -123,6 +124,6 @@ requestEncode mk = simpleHttp . LBSC.unpack . uriFromAddress mk
 requestDecode :: Maybe Text  -> (Double, Double) -> IO LBS.ByteString
 requestDecode mk = simpleHttp . LBSC.unpack . uriFromLocation mk
 
--- | Sends a request based on a 'GoogleApiRequest'.
-requestRequest :: GoogleAPIRequest -> IO LBS.ByteString
+-- | Sends a request based on a 'GoogleRequest'.
+requestRequest :: GoogleRequest -> IO LBS.ByteString
 requestRequest = simpleHttp . LBSC.unpack . uriFromQueryPairs . argShow

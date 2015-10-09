@@ -88,8 +88,8 @@ geoDecodeLanguage (Just k) (lat, lng) lang =
         (requestRaw
             [("latlng",pack (show lat) `append` pack (',' : show lng)), ("language", pack lang), ("key", pack k)])
 
--- | Sends a request based on a 'GoogleAPIRequest'.
-geoRequest :: GoogleAPIRequest -> IO (Either String GoogleAnswer)
+-- | Sends a request based on a 'GoogleRequest'.
+geoRequest :: GoogleRequest -> IO (Either String GoogleAnswer)
 geoRequest r = liftM parseAnswer (requestRequest r)
 
 
