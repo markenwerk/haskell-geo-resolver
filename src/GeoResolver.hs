@@ -14,7 +14,7 @@ web service.
 A minimum example of usage is:
 
 @
-main = geoEncode Nothing "Lornsenstraße 43, Kiel" >>= putStrLn . show
+main = geoRequest "Lornsenstraße 43, Kiel" >>= putStrLn . show
 @
 
 While it remains to be implemented to send all possible requests,
