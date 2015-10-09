@@ -13,6 +13,7 @@ module GeoResolver.Parser (
     GoogleResult(..),
     Component(..),
     Geometry(..),
+    GoogleBoundingBox(..),
     Location(..),
     -- * parsing
     parseAnswer,
@@ -41,7 +42,7 @@ data GoogleAnswer = GoogleAnswer {
     -- | The 'Status' returned by google.
     status :: Status,
     -- | An optional error message. 
-    errorMessage :: Maybe Text,
+    errorMessage :: Maybe String,
     -- | Optional list of actual 'GoogleResult' values. 
     results :: Maybe [GoogleResult]
     } deriving (Generic, Show)
@@ -86,11 +87,11 @@ instance FromJSON GoogleResult where
 -- | A part of the address in a 'GoogleResult'
 data Component = Component {
     -- | A long name for the component
-    longName :: Text,
+    longName :: String,
     -- | A short name for the component
-    shortName :: Text,
+    shortName :: String,
     -- | indicating the type of the address component.
-    cTypes :: [Text]
+    cTypes :: [String]
     } deriving (Generic, Show)
 instance FromJSON Component where
     parseJSON (Object v) = Component <$>
@@ -121,7 +122,7 @@ data Geometry = Geometry {
     -- polygon (region).
     --
     -- * @APPROXIMATE@ indicates that the returned result is approximate.
-    locationType :: Text,
+    locationType :: String,
     -- | contains the recommended viewport for displaying the returned result. 
     -- Generally the viewport
     -- is used to frame a result when displaying it to a user.

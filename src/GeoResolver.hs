@@ -8,7 +8,19 @@ License     : MIT
 Maintainer  : jg@markenwerk.net
 
 
-Moar about using this.
+This is supposed to offer an easy to use abstraction of the google geocoding
+web service.
+
+A minimum example of usage is:
+
+@
+main = geoEncode Nothing "Lornsenstraße 43, Kiel" >>= putStrLn . show
+@
+
+While it remains to be implemented to send all possible requests,
+it is possible to send raw requests.
+
+If you do so, please see "Geocoder.Parser" for ways to access the results.
 
 -}
 
@@ -76,6 +88,7 @@ geoDecodeLanguage (Just k) (lat, lng) lang =
             [("latlng",pack (show lat) `append` pack (',' : show lng)), ("language", pack lang), ("key", pack k)])
 
 -- | Sending a raw request to the api, if you want more control than the above methods offer.
+-- Uses a pair of key-value pairs to generate the actual query.
 -- See "GeoResolver.Parser" for a helping hand using the resulting 'GoogleAnswer'.
 geoRaw :: [(String, String)] -> IO (Either String GoogleAnswer)
 geoRaw xs = liftM parseAnswer (requestRaw (map (\(k,v) -> (pack k, pack v)) xs))
