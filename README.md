@@ -12,7 +12,7 @@ If you use [stack](https://github.com/commercialhaskell/stack), you can use the 
 packages:
 - '.'
 - location:
-    git: git@git.markenwerk.net:werkstuecke/HaskellGeoResolver.git
+    git: git@github.com:markenwerk/haskell-geo-resolver.git
     commit: whatever hash you'd like to use
 ````
 
