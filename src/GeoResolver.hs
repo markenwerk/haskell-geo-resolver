@@ -11,9 +11,10 @@ Maintainer  : jg@markenwerk.net
 This is supposed to offer an easy to use abstraction of the google geocoding
 web service.
 
-A minimum example of usage is:
+A minimum example of usage (with OverloadedStrings) is:
 
 @
+import GeoRequester
 main = geoRequest "Lornsenstraße 43, Kiel" >>= putStrLn . show
 @
 
@@ -89,12 +90,12 @@ geoDecodeLanguage (Just k) (lat, lng) lang =
             [("latlng",pack (show lat) `append` pack (',' : show lng)), ("language", pack lang), ("key", pack k)])
 
 -- | Sends a request based on a 'GoogleRequest'.
-geoRequest :: GoogleRequest -> IO (Either String GoogleAnswer)
+geoRequest :: GoogleRequest -> IO (Either String (GoogleAnswer GoogleResult))
 geoRequest r = liftM parseAnswer (requestRequest r)
 
 
 -- | Sending a raw request to the api, if you want more control than the above methods offer.
 -- Uses a pair of key-value pairs to generate the actual query.
 -- See "GeoResolver.Parser" for a helping hand using the resulting 'GoogleAnswer'.
-geoRaw :: [(String, String)] -> IO (Either String GoogleAnswer)
+geoRaw :: [(String, String)] -> IO (Either String (GoogleAnswer GoogleResult))
 geoRaw xs = liftM parseAnswer (requestRaw (map (\(k,v) -> (pack k, pack v)) xs))

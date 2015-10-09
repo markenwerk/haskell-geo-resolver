@@ -45,20 +45,25 @@ data Status = OK | ZERO_RESULTS | OVER_QUERY_LIMIT | REQUEST_DENIED | INVALID_RE
 instance FromJSON Status
 
 -- | Represents the answer google returned.
-data GoogleAnswer = GoogleAnswer {
+data GoogleAnswer r = GoogleAnswer {
     -- | The 'Status' returned by google.
     status :: Status,
     -- | An optional error message. 
     errorMessage :: Maybe String,
     -- | Optional list of actual 'GoogleResult' values. 
-    results :: Maybe [GoogleResult]
+    results :: Maybe [r]
     } deriving (Generic, Show)
-instance FromJSON GoogleAnswer where
+instance (FromJSON a) => FromJSON (GoogleAnswer a) where
     parseJSON (Object v) = GoogleAnswer <$>
                            v .: "status" <*>
                            v .:? "error_message" <*>
                            v .:? "results"
     parseJSON _          = mempty
+
+instance Foldable GoogleAnswer where
+    foldMap _ (GoogleAnswer _ _ Nothing) = mempty
+    foldMap f (GoogleAnswer _ _ (Just [r])) = f r
+    foldMap f (GoogleAnswer _ _ (Just rs)) = foldMap f rs
 
 
 -- | A single Result from the list of results from google.
@@ -180,8 +185,8 @@ instance FromJSON Location where
 -- @
 --  ((latitude &&& longitude) . location . geometry)
 -- @
-getProperty :: GoogleAnswer -- ^ The answer to process.
-    -> (GoogleResult -> a) -- ^ The function to be applied to the first (if any) result.
+getProperty :: GoogleAnswer r -- ^ The answer to process.
+    -> (r -> a) -- ^ The function to be applied to the first (if any) result.
     -> Either String a -- ^ Error or result of the function application
 getProperty a f = case status a of
     OK -> fromMaybe (Left "No results.") (results a >>= (\res -> case res of
@@ -189,14 +194,15 @@ getProperty a f = case status a of
         _ -> Just $ Left "Empty resultset"))
     otherwise -> Left (show otherwise ++ show (errorMessage a))
 
+
 -- | Gets the location from a 'GoogleAnswer', or returns an error.
-getLocation :: GoogleAnswer -> Either String (Double, Double)
+getLocation :: GoogleAnswer GoogleResult -> Either String (Double, Double)
 getLocation a = a `getProperty` ((latitude &&& longitude) . location . geometry)
 
 -- | Gets the formatted address from a GoogleAnswer (or an error)
-getAddress :: GoogleAnswer -> Either String String
+getAddress :: GoogleAnswer GoogleResult -> Either String String
 getAddress a = a `getProperty` formattedAddress
 
 -- | Parses a Lazy ByteString into a 'GoogleAnswer' or returns an error describing the problem.
-parseAnswer :: LBS.ByteString -> Either String GoogleAnswer
+parseAnswer :: LBS.ByteString -> Either String (GoogleAnswer GoogleResult)
 parseAnswer = eitherDecode
