@@ -25,7 +25,7 @@ The package is documented using Haddock.
 ## Usage
 A minimum example of usage (with @OverloadedStrings@) is:
 
-````
+````haskell
 import GeoRequester
 main = geoRequest "Lornsenstraße 43, Kiel" >>= putStrLn . show
 ````
