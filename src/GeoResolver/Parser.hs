@@ -20,7 +20,9 @@ module GeoResolver.Parser (
     -- * convenience functions
     getLocation,
     getAddress,
-    getProperty
+    getProperty,
+    -- * Typeclasses
+    GoogleArgumentListShow(..)
     ) where 
 
 import GHC.Generics
@@ -30,6 +32,11 @@ import Data.Text
 import Data.Maybe (fromMaybe)
 import Control.Arrow
 import qualified Data.ByteString.Lazy.Char8 as LBS
+
+
+-- | A class to format instances the way google expects them.
+class GoogleArgumentListShow a where
+  argListShow :: a -> String
 
 -- | Represents the status of the operation returned by google. Constructors represent possible 'String' values
 -- according to googles documentation.
@@ -146,6 +153,8 @@ data GoogleBoundingBox = GoogleBoundingBox {
     southwest :: Location
 } deriving (Show, Generic)
 instance FromJSON GoogleBoundingBox
+instance GoogleArgumentListShow GoogleBoundingBox where
+    argListShow (GoogleBoundingBox ne sw) = argListShow ne ++ '|' : argListShow sw
 
 
 -- | Abstraction of a geo location 
@@ -155,6 +164,9 @@ data Location = Location {
     -- | Longitude of the location
     longitude :: Double
     } deriving (Generic, Show)
+instance GoogleArgumentListShow Location where
+    argListShow (Location lat long) = show lat ++ ',': show long
+
 instance FromJSON Location where
     parseJSON (Object o) = Location <$>
         o .: "lat" <*>

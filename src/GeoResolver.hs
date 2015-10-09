@@ -33,6 +33,7 @@ module GeoResolver
       geoDecode,
       geoDecodeLanguage,
       -- * Raw Requesting
+      geoRequest,
       geoRaw
     ) where
 import GeoResolver.Requester
@@ -86,6 +87,11 @@ geoDecodeLanguage (Just k) (lat, lng) lang =
     liftM (parseAnswer >=> getAddress)
         (requestRaw
             [("latlng",pack (show lat) `append` pack (',' : show lng)), ("language", pack lang), ("key", pack k)])
+
+-- | Sends a request based on a 'GoogleAPIRequest'.
+geoRequest :: GoogleAPIRequest -> IO (Either String GoogleAnswer)
+geoRequest r = liftM parseAnswer (requestRequest r)
+
 
 -- | Sending a raw request to the api, if you want more control than the above methods offer.
 -- Uses a pair of key-value pairs to generate the actual query.
