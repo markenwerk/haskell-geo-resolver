@@ -11,17 +11,22 @@ Maintainer  : jg@markenwerk.net
 This is supposed to offer an easy to use abstraction of the google geocoding
 web service.
 
-A minimum example of usage (with OverloadedStrings) is:
+A minimum example of usage (with @OverloadedStrings@) is:
 
 @
 import GeoRequester
 main = geoRequest "Lornsenstraße 43, Kiel" >>= putStrLn . show
 @
 
-While it remains to be implemented to send all possible requests,
-it is possible to send raw requests.
+While there are convenience functions for the most common use cases,
+there are means to send arbitrary requests.
 
 If you do so, please see "Geocoder.Parser" for ways to access the results.
+As a hint, 'GoogleAnswer' is instance of 'Foldable' and 'Functor'.
+
+
+Please note that this Package is also meant to demonstrate basic Haskell features
+and thus not always takes the most elegant way but the most educational way.
 
 -}
 
