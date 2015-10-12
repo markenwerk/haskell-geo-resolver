@@ -6,7 +6,7 @@ Copyright   : (c) 2015, Markenwerk, Jan Greve
 License     : MIT
 Maintainer  : jg@markenwerk.net
 -}
-module GeoResolver.Parser (
+module Network.Google.GeoResolver.Parser (
     -- * Data type definition for parsed types
     Status(..),
     GoogleAnswer(..),
@@ -62,8 +62,8 @@ instance (FromJSON a) => FromJSON (GoogleAnswer a) where
     parseJSON _          = mempty
 
 instance Functor GoogleAnswer where
-    fmap f (GoogleAnswer s e Nothing) = (GoogleAnswer s e Nothing)
-    fmap f (GoogleAnswer s e (Just xs)) = (GoogleAnswer s e (Just $ fmap f xs))
+    fmap f (GoogleAnswer s e Nothing) = GoogleAnswer s e Nothing
+    fmap f (GoogleAnswer s e (Just xs)) = GoogleAnswer s e (Just $ fmap f xs)
 
 instance Foldable GoogleAnswer where
     foldMap _ (GoogleAnswer _ _ Nothing) = mempty

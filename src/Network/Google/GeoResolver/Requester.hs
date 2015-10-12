@@ -6,7 +6,7 @@ Copyright   : (c) 2015, Markenwerk, Jan Greve
 License     : MIT
 Maintainer  : jg@markenwerk.net
 -}
-module GeoResolver.Requester (
+module Network.Google.GeoResolver.Requester (
     -- * Data Types
     GoogleRequest(..),
     GoogleComponents(..),
@@ -26,7 +26,7 @@ import Blaze.ByteString.Builder
 import qualified Data.ByteString.Lazy as LBS
 import qualified Data.ByteString.Lazy.Char8 as LBSC
 import Data.Text (Text, append, pack)
-import GeoResolver.Parser (GoogleBoundingBox(..), Location(..), GoogleArgumentListShow(..))
+import Network.Google.GeoResolver.Parser (GoogleBoundingBox(..), Location(..), GoogleArgumentListShow(..))
 import Data.Maybe
 import Control.Arrow (second)
 import Data.String (IsString(..))
@@ -113,8 +113,8 @@ uriFromAddress (Just k) x = uriFromQueryPairs [("address",x), ("key", k)]
 
 
 uriFromLocation :: Maybe Text -> (Double, Double) -> LBS.ByteString
-uriFromLocation Nothing (lat, lng) = uriFromQueryPairs [("latlng", pack (show lat) `append` (pack $ ',':show lng))]
-uriFromLocation (Just k) (lat, lng) = uriFromQueryPairs [("latlng", pack (show lat) `append` (pack $ ',':show lng)), ("key", k)]
+uriFromLocation Nothing (lat, lng) = uriFromQueryPairs [("latlng", pack (show lat) `append` pack (',':show lng))]
+uriFromLocation (Just k) (lat, lng) = uriFromQueryPairs [("latlng", pack (show lat) `append` pack (',':show lng)), ("key", k)]
 
 -- | Convenience function to request a given address.
 requestEncode :: Maybe Text -> Text -> IO LBS.ByteString

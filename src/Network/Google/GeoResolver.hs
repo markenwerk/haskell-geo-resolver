@@ -30,7 +30,7 @@ and thus not always takes the most elegant way but the most educational way.
 
 -}
 
-module GeoResolver
+module Network.Google.GeoResolver
     ( 
       -- * Encoding
       geoEncode,
@@ -42,8 +42,8 @@ module GeoResolver
       geoRequest,
       geoRaw
     ) where
-import GeoResolver.Requester
-import GeoResolver.Parser
+import Network.Google.GeoResolver.Requester
+import Network.Google.GeoResolver.Parser
 import Control.Monad
 import Data.Text (pack, append)
 

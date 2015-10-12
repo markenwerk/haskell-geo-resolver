@@ -2,8 +2,8 @@ name:                geo-resolver
 version:             0.1.0.1
 synopsis:            Performs geo location lookups and parses the results 
 description:         Please see README.md
-homepage:            http://github.com/githubuser/GeoResolver#readme
-license:             BSD3
+homepage:            https://github.com/markenwerk/haskell-geo-resolver/
+license:             MIT
 license-file:        LICENSE
 author:              Jan Greve
 maintainer:          jg@markenwerk.net
@@ -15,7 +15,7 @@ cabal-version:       >=1.10
 
 library
   hs-source-dirs:      src
-  exposed-modules:     GeoResolver, GeoResolver.Parser, GeoResolver.Requester
+  exposed-modules:     Network.Google.GeoResolver, Network.Google.GeoResolver.Parser, Network.Google.GeoResolver.Requester
   build-depends:       base >= 4.7 && < 5,
                        aeson >= 0.8.0.2 && < 1,
                        http-conduit >= 2.1.8 && < 2.2,
@@ -44,4 +44,4 @@ test-suite GeoResolver-test
 
 source-repository head
   type:     git
-  location: https://git.markenwerk.net/werkstuecke/HaskellGeoResolver.git
+  location: https://github.com/markenwerk/haskell-geo-resolver.git

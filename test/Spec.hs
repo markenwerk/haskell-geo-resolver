@@ -1,5 +1,5 @@
-import GeoResolver
-import GeoResolver.Parser
+import Network.Google.GeoResolver
+import Network.Google.GeoResolver.Parser
 import Test.Framework (defaultMain, testGroup)
 import Test.HUnit
 import Test.HUnit.Base
