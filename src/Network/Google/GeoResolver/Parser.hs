@@ -183,7 +183,7 @@ instance FromJSON Location where
         o .: "lng"
     parseJSON _ = mempty
 instance ToJSON Location where
-    toJSON l = object ["lat" .= (latitude l), "lng" .= (longitude l)] 
+    toJSON l = object ["lat" .= latitude l, "lng" .= longitude l] 
 -- | Takes a 'GoogleAnswer' and applies the function to the first 'GoogleResult'.
 -- Returns a 'Left' with an error description if anything unexpected happens.
 --

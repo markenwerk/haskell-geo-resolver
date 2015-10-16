@@ -45,6 +45,7 @@ module Network.Google.GeoResolver
 import Network.Google.GeoResolver.Requester
 import Network.Google.GeoResolver.Parser
 import Control.Monad
+import Control.Arrow
 import Data.Text (pack, append)
 
 
@@ -103,4 +104,4 @@ geoRequest r = liftM parseAnswer (requestRequest r)
 -- Uses a pair of key-value pairs to generate the actual query.
 -- See "GeoResolver.Parser" for a helping hand using the resulting 'GoogleAnswer'.
 geoRaw :: [(String, String)] -> IO (Either String (GoogleAnswer GoogleResult))
-geoRaw xs = liftM parseAnswer (requestRaw (map (\(k,v) -> (pack k, pack v)) xs))
+geoRaw xs = liftM parseAnswer (requestRaw (map (pack *** pack) xs))
