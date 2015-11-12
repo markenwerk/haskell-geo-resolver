@@ -6,7 +6,7 @@ and thus not always takes the most elegant way but the most educational way.
 
 ## Install
 ### Stack
-If you use [stack](https://github.com/commercialhaskell/stack), you can use the latest commit as an extra package in your stack.yaml under the packages-directive.:
+If you use [stack](https://github.com/commercialhaskell/stack), you can use the latest commit as an extra package in your stack.yaml under the packages-directive:
 
 ````
 packages:
