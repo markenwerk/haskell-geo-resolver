@@ -6,7 +6,7 @@ before_install:
   - export PATH=~/.local/bin:$PATH
   - travis_retry curl -L https://www.stackage.org/stack/linux-x86_64 | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
   - export PATH=/opt/ghc/7.8.4/bin:$PATH
-  - wget https://github.com/futurice/fum2github/blob/master/travis_long
+  - wget https://raw.githubusercontent.com/futurice/fum2github/master/travis_long
   - chmod +x travis_long
 
 addons:
